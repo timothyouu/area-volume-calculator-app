@@ -1,0 +1,538 @@
+//Created a list that holds all the shapes the calculator can calculate
+var shapesList = ["Triangle", "Parallelogram", "Rectangle", "Rhombus", "Square", "Kite", "Trapezoid", "Regular Triangle", "Regular Pentagon", "Regular Hexagon", "Regular Octagon", "Circle", "Cylinder", "Cone", "Triangular Pyramid", "Rectangular Pyramid", "Regular Triangular Pyramid", "Square Pyramid", "Pentagonal Pyramid", "Hexagonal Pyramid", "Octagonal Pyramid", "Triangular Prism", "Rectangular Prism", "Regular Triangular Prism", "Square Prism", "Pentagonal Prism", "Hexagonal Prism", "Octagonal Prism", "Sphere"];
+
+/* 
+Made a variables to hold the shape the user inputted, hold the answer 
+that was calculated using user input, and hold the status of each input 
+after checking
+*/
+var userShape;
+var answer;
+var input1Status;
+var input2Status;
+var input3Status;
+
+//When user clicks startButton it will change to the selectionScreen
+onEvent("startButton", "click", function( ) {
+  setScreen("selectionScreen");
+  playSound("sound://category_notifications/game_notification_83.mp3", false);
+});
+
+//When user clicks homeButton1 it will go back to the homeScreen and clear/hide all inputs
+onEvent("homeButton1", "click", function( ) {
+  setScreen("homeScreen");
+  playSound("sound://category_digital/jump_1.mp3", false);
+  clearInputOutput();
+  hideInput();
+});
+
+//When user clicks homeButton2 it will go back to the homeScreen and clear/hide all inputs
+onEvent("homeButton2", "click", function( ) {
+  setScreen("homeScreen");
+  playSound("sound://category_digital/jump_1.mp3", false);
+  clearInputOutput();
+  hideInput();
+});
+
+//When user clicks goBackButton it will go back to selectionScreen and clear/hide all inputs
+onEvent("goBackButton", "click", function( ) {
+  setScreen("selectionScreen");
+  playSound("sound://category_digital/jump_1.mp3", false);
+  clearInputOutput();
+  hideInput();
+});
+
+//When user clicks 2dButton it will go to calculationScreen, and display the 2dShapeDropdown and first shape on the dropdown
+onEvent("2dButton", "click", function( ) {
+  setScreen("calculationScreen");
+  showElement("2dShapeDropdown");
+  hideElement("3dShapeDropdown");
+  playSound("sound://category_notifications/game_notification_83.mp3", false);
+  userShape = getText("2dShapeDropdown");
+  displayInput(userShape);
+});
+
+//When user clicks 3dButton it will go to calculationScreen, and display the 3dShapeDropdown and first shape on the dropdown
+onEvent("3dButton", "click", function( ) {
+  setScreen("calculationScreen");
+  showElement("3dShapeDropdown");
+  hideElement("2dShapeDropdown");
+  playSound("sound://category_notifications/game_notification_83.mp3", false);
+  userShape = getText("3dShapeDropdown");
+  displayInput(userShape);
+});
+
+//Gets the user input and displays the shape they chose along with the inputs for that shape
+onEvent("2dShapeDropdown", "input", function( ) {
+  userShape = getText("2dShapeDropdown");
+  displayInput(userShape);
+});
+
+//Gets the user input and displays the shape they chose along with the inputs for that shape
+onEvent("3dShapeDropdown", "input", function( ) {
+  userShape = getText("3dShapeDropdown");
+  displayInput(userShape);
+});
+
+//Gets the user input and displays the shape they chose along with the inputs for that shape
+onEvent("goButton","click",function( ) {
+  playSound("sound://category_hits/puzzle_game_magic_item_unlock_5.mp3", false);
+  checkInputs(getNumber("input1"), getNumber("input2"), getNumber("input3"));
+  calculateShape(userShape, getNumber("input1"), getNumber("input2"), getNumber("input3"));
+  setText("answerOutput", "Answer = " + answer);
+});
+
+//Removes the warning message regarding numbers on their screen
+onEvent("exitButtonNumber","click",function( ) {
+  playSound("sound://category_hits/retro_game_hit_block_3.mp3", false);
+  hideElement("exitButtonNumber");
+  hideElement("warningMessageNumber");
+  hideElement("warningBackgroundNumber");
+});
+
+//Removes the warning message regarding characters on their screen
+onEvent("exitButtonCharacter","click",function( ) {
+  playSound("sound://category_hits/retro_game_hit_block_3.mp3", false);
+  hideElement("exitButtonCharacter");
+  hideElement("warningMessageCharacter");
+  hideElement("warningBackgroundCharacter");
+});
+
+/* 
+This function checks to make sure the inputs the user input for that shape are numbers that are greater than 0 and do not contain any symbols or characters
+If not it will display a warning message and label them as good/bad depending on if it is a valid input
+num1 {number) - This parameter SHOULD contain a number, unless a user inputs a character/symbol
+num2 {number) - This parameter SHOULD contain a number, unless a user inputs a character/symbol
+num3 {number) - This parameter SHOULD contain a number, unless a user inputs a character/symbol
+*/
+function checkInputs (num1, num2, num3){
+  if ((num1 <= 0 && num1 != "") || num1 == 0) {
+    setText("input1","");
+    showElement("warningMessageNumber");
+    showElement("warningBackgroundNumber");
+    showElement("exitButtonNumber");
+    input1Status = "problem";
+  } else if (num1 >= 1) {
+    setText("input1",num1);
+    input1Status = "good";
+  } else if (num1 != ".") {
+    setText("input1","");
+    showElement("warningMessageCharacter");
+    showElement("warningBackgroundCharacter");
+    showElement("exitButtonCharacter");
+    input1Status = "problem";
+  }
+  if (userShape == shapesList[0]||userShape == shapesList[1]||userShape == shapesList[2]||userShape == shapesList[3]||userShape == shapesList[5]||userShape == shapesList[12]||userShape == shapesList[13]||userShape == shapesList[16]||userShape == shapesList[17]||userShape == shapesList[18]||userShape == shapesList[19]||userShape == shapesList[20]||userShape == shapesList[23]||userShape == shapesList[24]||userShape == shapesList[25]||userShape == shapesList[26]||userShape == shapesList[27]||userShape == shapesList[6]||userShape == shapesList[14]||userShape == shapesList[15]||userShape == shapesList[21]||userShape == shapesList[22]) {
+    if ((num2 <= 0 && num2 != "") || num2 == 0) {
+      setText("input2","");
+      showElement("warningMessageNumber");
+      showElement("warningBackgroundNumber");
+      showElement("exitButtonNumber");
+      input2Status = "problem";
+    } else if (num2 >= 1) {
+      setText("input2",num2);
+      input2Status = "good";
+    } else if (num2 != ".") {
+      setText("input2","");
+      showElement("warningMessageCharacter");
+      showElement("warningBackgroundCharacter");
+      showElement("exitButtonCharacter");
+      input2Status = "problem";
+    }
+  }
+  if (userShape == shapesList[6]||userShape == shapesList[14]||userShape == shapesList[15]||userShape == shapesList[21]||userShape == shapesList[22]) {
+    if ((num3 <= 0 && num3 != "") || num3 == 0) {
+      setText("input3","");
+      showElement("warningMessageNumber");
+      showElement("warningBackgroundNumber");
+      showElement("exitButtonNumber");
+      input3Status = "problem";
+    } else if (num3 >= 1) {
+      setText("input3",num3);
+      input3Status = "good";
+    } else if (num3 != ".") {
+      setText("input3","");
+      showElement("warningMessageCharacter");
+      showElement("warningBackgroundCharacter");
+      showElement("exitButtonCharacter");
+      input3Status = "problem";
+    }
+  } 
+}
+
+/* 
+This function calculates the answer using the shape and numbers they inputted
+shape {string} - This parameter contains the shape the user inputs
+num1 {number} - This parameter SHOULD contain a number, unless a user inputs a character/symbol
+num2 {number} - This parameter SHOULD contain a number, unless a user inputs a character/symbol
+num3 {number} - This parameter SHOULD contain a number, unless a user inputs a character/symbol
+return answer {number} - This returns the number calculated taking into account the shape and the number the user inputted
+*/
+function calculateShape (shape, num1, num2, num3){
+  answer ="invalid";
+  if (shape == shapesList[0]) {
+    if (input1Status == "good" && input2Status == "good"){
+      answer = Math.round((1/2 * (num1 * num2))*1000)/1000;
+    }
+    return answer; 
+  } else if (shape == shapesList[1]) {
+    if (input1Status == "good" && input2Status == "good"){
+      answer = Math.round((num1 * num2)*1000)/1000;
+    }
+    return answer; 
+  } else if (shape == shapesList[2]) {
+    if (input1Status == "good" && input2Status == "good"){
+      answer = Math.round((num1 * num2)*1000)/1000;
+    }
+    return answer; 
+  } else if (shape == shapesList[3]) {
+    if (input1Status == "good" && input2Status == "good"){
+      answer = Math.round(((num1 * num2)/2)*1000)/1000;
+    }
+    return answer; 
+  } else if (shape == shapesList[4]) {
+    if (input1Status == "good"){
+      answer = Math.round(((num1 * num1))*1000)/1000;
+    }
+    return answer; 
+  } else if (shape == shapesList[5]) {
+    if (input1Status == "good" && input2Status == "good"){
+      answer = Math.round(((num1 * num2)/2)*1000)/1000;
+    }
+    return answer; 
+  } else if (shape == shapesList[6]) {
+    if (input1Status == "good" && input2Status == "good" && input3Status == "good"){
+      answer = Math.round((((num1 + num2)/2)*num3)*1000)/1000;
+    }
+    return answer; 
+  } else if (shape == shapesList[7]) {
+    if (input1Status == "good"){
+      answer = Math.round(((Math.sqrt(3)/4) * num1 * num1)*1000)/1000;
+    }
+    return answer; 
+  } else if (shape == shapesList[8]) {
+    if (input1Status == "good"){
+      answer = Math.round(((1/4)*(Math.sqrt(5 * (5 + 2 * Math.sqrt(5)))) * num1 * num1)*1000)/1000;
+    }
+    return answer; 
+  } else if (shape == shapesList[9]) {
+    if (input1Status == "good"){
+      answer = Math.round((((3 * Math.sqrt(3))/2) * num1 * num1)*1000)/1000;
+    }
+    return answer; 
+  } else if (shape == shapesList[10]) {
+    if (input1Status == "good"){
+      answer = Math.round((2 * (1 + Math.sqrt(2)) * num1 * num1)*1000)/1000;
+    }
+    return answer; 
+  } else if (shape == shapesList[11]) {
+    if (input1Status == "good"){
+      answer = Math.round((Math.PI * num1 * num1)*1000)/1000;
+    }
+    return answer; 
+  } else if (shape == shapesList[12]) {
+    if (input1Status == "good" && input2Status == "good"){
+      answer = Math.round(((Math.PI * num1 * num1) * num2)*1000)/1000;
+    }
+    return answer;
+  } else if (shape == shapesList[13]) {
+    if (input1Status == "good" && input2Status == "good"){
+      answer = Math.round((1/3 * (Math.PI * num1 * num1) * num2)*1000)/1000;
+    }
+    return answer;
+  } else if (shape == shapesList[14]) {
+    if (input1Status == "good" && input2Status == "good" && input3Status == "good"){
+      answer = Math.round((1/3 * (1/2 * num1 * num3) * num2)*1000)/1000;
+    }
+    return answer;
+  } else if (shape == shapesList[15]) {
+    if (input1Status == "good" && input2Status == "good" && input3Status == "good"){
+      answer = Math.round((1/3 * num1 * num2 * num3)*1000)/1000;
+    }
+    return answer;
+  } else if (shape == shapesList[16]) {
+    if (input1Status == "good" && input2Status == "good"){
+      answer = Math.round(((1/3 *(Math.sqrt(3)/4) * num1 * num1)* num2)*1000)/1000;
+    }
+    return answer; 
+  } else if (shape == shapesList[17]) {
+    if (input1Status == "good" && input2Status == "good"){
+      answer = Math.round((1/3 *(num1 * num1) * num2)*1000)/1000;
+    }
+    return answer; 
+  } else if (shape == shapesList[18]) {
+    if (input1Status == "good" && input2Status == "good"){
+      answer = Math.round((1/3 * ((1/4)*(Math.sqrt(5 * (5 + 2 * Math.sqrt(5)))) * num1 * num1) * num2)*1000)/1000;
+    }
+    return answer; 
+  } else if (shape == shapesList[19]) {
+    if (input1Status == "good" && input2Status == "good"){
+      answer = Math.round((((1/3 * (3 * Math.sqrt(3))/2) * num1 * num1) * num2)*1000)/1000;
+    }
+    return answer; 
+  } else if (shape == shapesList[20]) {
+    if (input1Status == "good" && input2Status == "good"){
+      answer = Math.round((1/3 * (2 * (1 + Math.sqrt(2)) * num1 * num1) * num2)*1000)/1000;
+    }
+    return answer; 
+  } else if (shape == shapesList[21]) {
+    if (input1Status == "good" && input2Status == "good" && input3Status == "good"){
+      answer = Math.round(((1/2 * num1 * num2) * num3)*1000)/1000;
+    }
+    return answer;
+  } else if (shape == shapesList[22]) {
+    if (input1Status == "good" && input2Status == "good" && input3Status == "good"){
+      answer = Math.round((num1 * num2 * num3)*1000)/1000;
+    }
+    return answer;
+  } else if (shape == shapesList[23]) {
+    if (input1Status == "good" && input2Status == "good"){
+      answer = Math.round((((Math.sqrt(3)/4) * num1 * num1)* num2)*1000)/1000;
+    }
+    return answer; 
+  } else if (shape == shapesList[24]) {
+    if (input1Status == "good" && input2Status == "good"){
+      answer = Math.round(((num1 * num1) * num2)*1000)/1000;
+    }
+    return answer; 
+  } else if (shape == shapesList[25]) {
+    if (input1Status == "good" && input2Status == "good"){
+      answer = Math.round((((1/4)*(Math.sqrt(5 * (5 + 2 * Math.sqrt(5)))) * num1 * num1) * num2)*1000)/1000;
+    }
+    return answer; 
+  } else if (shape == shapesList[26]) {
+    if (input1Status == "good" && input2Status == "good"){
+      answer = Math.round(((((3 * Math.sqrt(3))/2) * num1 * num1) * num2)*1000)/1000;
+    }
+    return answer; 
+  } else if (shape == shapesList[27]) {
+    if (input1Status == "good" && input2Status == "good"){
+      answer = Math.round(((2 * (1 + Math.sqrt(2)) * num1 * num1) * num2)*1000)/1000;
+    }
+    return answer; 
+  } else {
+    if (input1Status == "good"){
+      answer = Math.round((4/3 * (Math.PI * num1 * num1 * num1))*1000)/1000;
+    }
+    return answer;
+  }
+}
+
+//This function clears out the inputs and output
+function clearInputOutput (){
+  setText("input1", "");
+  setText("input2", "");
+  setText("input3", "");
+  setText("answerOutput","Answer = ");
+}
+
+//This function hides all the inputs
+function hideInput (){
+  hideElement("input1");
+  hideElement("input2");
+  hideElement("input3");
+  hideElement("textInput1");
+  hideElement("textInput2");
+  hideElement("textInput3");
+}
+
+//This function shows the inputs depending on the shape the user inputs
+function showInput (){
+  var countInputs;
+  if (userShape == shapesList[4]||userShape == shapesList[7]||userShape == shapesList[8]||userShape == shapesList[9]||userShape == shapesList[10]||userShape == shapesList[11]||userShape == shapesList[28]){
+    countInputs = 2;
+    for (var a = 1; a < countInputs; a++) {
+      showElement("textInput" + a);
+      showElement("input" + a);
+    }
+  } else if (userShape == shapesList[0]||userShape == shapesList[1]||userShape == shapesList[2]||userShape == shapesList[3]||userShape == shapesList[5]||userShape == shapesList[12]||userShape == shapesList[13]||userShape == shapesList[16]||userShape == shapesList[17]||userShape == shapesList[18]||userShape == shapesList[19]||userShape == shapesList[20]||userShape == shapesList[23]||userShape == shapesList[24]||userShape == shapesList[25]||userShape == shapesList[26]||userShape == shapesList[27]) {
+    countInputs = 3;
+    for (var b = 1; b < countInputs; b++) {
+      showElement("textInput" + b);
+      showElement("input" + b);
+    }
+  } else {
+    countInputs = 4;
+    for (var c = 1; c < countInputs; c++) {
+      showElement("textInput" + c);
+      showElement("input" + c);
+    }
+  }
+}
+
+//This function updates the number of inputs and what the label displays on the screen, to the shape the user inputs
+//shape {string} - This parameter contains the shape the user inputs
+function displayInput (shape){
+  playSound("sound://category_collect/puzzle_game_item_select_04.mp3", false);
+  clearInputOutput();
+  hideInput();
+  if (shape == shapesList[0]) {
+    showInput();
+    setText("textInput1", "base(b)=");
+    setText("textInput2", "height(h)=");
+    setImageURL("imageOutput", "Triangle.png");
+  } else if (shape == shapesList[1]) {
+    showInput();
+    setText("textInput1", "base(b)=");
+    setText("textInput2", "height(h)=");
+    setImageURL("imageOutput", "Parallelogram.png");
+  } else if (shape == shapesList[2]) {
+    showInput();
+    setText("textInput1", "length(l)=");
+    setText("textInput2", "width(w)=");
+    setImageURL("imageOutput", "Rectangle.png");
+  } else if (shape == shapesList[3]) {
+    showInput();
+    setText("textInput1", "diagonal 1(d1)=");
+    setText("textInput2", "diagonal 2(d2)=");
+    setImageURL("imageOutput", "Rhombus.png");
+  } else if (shape == shapesList[4]) {
+    showInput();
+    setText("textInput1", "side(s)=");
+    setImageURL("imageOutput", "Square.png");
+  } else if (shape == shapesList[5]) {
+    showInput();
+    setText("textInput1", "diagonal 1(d1)=");
+    setText("textInput2", "diagonal 2(d2)=");
+    setImageURL("imageOutput", "Kite.png");
+  } else if (shape == shapesList[6]) {
+    showInput();
+    setText("textInput1", "base 1(b1)=");
+    setText("textInput2", "base 2(b2)=");
+    setText("textInput3", "height(h)=");
+    setImageURL("imageOutput", "Trapezoid.png");
+  } else if (shape == shapesList[7]) {
+    showInput();
+    setText("textInput1", "side(s)=");
+    setImageURL("imageOutput", "regular-triangle.png");
+  } else if (shape == shapesList[8]) {
+    showInput();
+    setText("textInput1", "side(s)=");
+    setImageURL("imageOutput", "Pentagon.png");
+  } else if (shape == shapesList[9]) {
+    showInput();
+    setText("textInput1", "side(s)=");
+    setImageURL("imageOutput", "Hexagon.png");
+  } else if (shape == shapesList[10]) {
+    showInput();
+    setText("textInput1", "side(s)=");
+    setImageURL("imageOutput", "OCtagon.png");
+  } else if (shape == shapesList[11]) {
+    showInput();
+    setText("textInput1", "radius(r)=");
+    setImageURL("imageOutput", "circle.png");
+  } else if (shape == shapesList[12]) {
+    showInput();
+    setText("textInput1", "radius(r)=");
+    setText("textInput2", "height(h)=");
+    setImageURL("imageOutput", "Cylinder.png");
+  } else if (shape == shapesList[13]) {
+    showInput();
+    setText("textInput1", "radius(r)=");
+    setText("textInput2", "height(h)=");
+    setImageURL("imageOutput", "Cone.png");
+  } else if (shape == shapesList[14]) {
+    showInput();
+    setText("textInput1", "base(b)=");
+    setText("textInput2", "height 1(h1)=");
+    setText("textInput3", "height 2(h2)=");
+    setImageURL("imageOutput", "Triangular-Pyramid.png");
+  } else if (shape == shapesList[15]) {
+    showInput();
+    setText("textInput1", "length(l)=");
+    setText("textInput2", "width(w)=");
+    setText("textInput3", "height(h)=");
+    setImageURL("imageOutput", "Rectangular-Pyramid.png");
+  } else if (shape == shapesList[16]) {
+    showInput();
+    setText("textInput1", "side(s)=");
+    setText("textInput2", "height(h)=");
+    setImageURL("imageOutput", "Regular-Triangular-Pyramid.png");
+  } else if (shape == shapesList[17]) {
+    showInput();
+    setText("textInput1", "side(s)=");
+    setText("textInput2", "height(h)=");
+    setImageURL("imageOutput", "Regular-Square-Pyramid.png");
+  } else if (shape == shapesList[18]) {
+    showInput();
+    setText("textInput1", "side(s)=");
+    setText("textInput2", "height(h)=");
+    setImageURL("imageOutput", "Pentagonal-Pyramid.png");
+  } else if (shape == shapesList[19]) {
+    showInput();
+    setText("textInput1", "side(s)=");
+    setText("textInput2", "height(h)=");
+    setImageURL("imageOutput", "Hexagonal-Pyramid.png");
+  } else if (shape == shapesList[20]) {
+    showInput();
+    setText("textInput1", "side(s)=");
+    setText("textInput2", "height(h)=");
+    setImageURL("imageOutput", "Octagonal-Pyramid.png");
+  } else if (shape == shapesList[21]) {
+    showInput();
+    setText("textInput1", "base(b)=");
+    setText("textInput2", "height 1(h1)=");
+    setText("textInput3", "height 2(h2)=");
+    setImageURL("imageOutput", "Triangular-Prism.png");
+  } else if (shape == shapesList[22]) {
+    showInput();
+    setText("textInput1", "length(l)=");
+    setText("textInput2", "width(w)=");
+    setText("textInput3", "height(h)=");
+    setImageURL("imageOutput", "Rectangular-prism.png");
+  } else if (shape == shapesList[23]) {
+    showInput();
+    setText("textInput1", "side(s)=");
+    setText("textInput2", "height(h)=");
+    setImageURL("imageOutput", "Regular-Triangular-Prism.png");
+  } else if (shape == shapesList[24]) {
+    showInput();
+    setText("textInput1", "side(s)=");
+    setText("textInput2", "height(h)=");
+    setImageURL("imageOutput", "square-prism.png");
+  } else if (shape == shapesList[25]) {
+    showInput();
+    setText("textInput1", "side(s)=");
+    setText("textInput2", "height(h)=");
+    setImageURL("imageOutput", "Pentagonal-Prism.png");
+  } else if (shape == shapesList[26]) {
+    showInput();
+    setText("textInput1", "side(s)=");
+    setText("textInput2", "height(h)=");
+    setImageURL("imageOutput", "hexagonal-prism.png");
+  } else if (shape == shapesList[27]) {
+    showInput();
+    setText("textInput1", "side(s)=");
+    setText("textInput2", "height(h)=");
+    setImageURL("imageOutput", "octagonal-prism.png");
+  } else {
+    showInput();
+    setText("textInput1", "radius(r)=");
+    setImageURL("imageOutput", "sphere.png");
+  }
+}
+
+/* 
+Documentation:
+Home Image - https://www.google.com/url?sa=i&url=https%3A%2F%2Fuxdesign.cc%2Fpsychology-of-shapes-in-design-how-different-shapes-can-affect-people-behavior-13cace04ce1e&psig=AOvVaw0U4RbZX_MvQESlCyPDv55_&ust=1714942016432000&source=images&cd=vfe&opi=89978449&ved=0CBAQjRxqFwoTCMCwyYDv9IUDFQAAAAAdAAAAABAT
+Selection Image - https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.quora.com%2FHow-can-I-exactly-distinguish-between-2D-and-3D-images&psig=AOvVaw3KcxXafLRiiMxvImseYfp7&ust=1714942141242000&source=images&cd=vfe&opi=89978449&ved=0CBAQjRxqFwoTCNDlx7vv9IUDFQAAAAAdAAAAABAE 
+List of 2d Shapes Image - https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.chino.k12.ca.us%2FPage%2F20562&psig=AOvVaw3_sgdcSzgDQsCE8gAoK54O&ust=1715135821712000&source=images&cd=vfe&opi=89978449&ved=0CBAQjRxqFwoTCICn0YbB-oUDFQAAAAAdAAAAABAJ 
+Cylinder Image - https://www.google.com/url?sa=i&url=https%3A%2F%2Fbyjus.com%2Fmaths%2Fright-circular-cylinder%2F&psig=AOvVaw3H_GXEOt70zYUbo4nJoNcj&ust=1715139561950000&source=images&cd=vfe&opi=89978449&ved=0CBAQjRxqFwoTCKCujvXO-oUDFQAAAAAdAAAAABAE 
+Cone Image - https://www.google.com/url?sa=i&url=https%3A%2F%2Fsimple.wikipedia.org%2Fwiki%2FCone&psig=AOvVaw3PnkvIuVAL3TuRL3Yg_fyD&ust=1715139667452000&source=images&cd=vfe&opi=89978449&ved=0CBAQjRxqFwoTCMiXlKfP-oUDFQAAAAAdAAAAABAT 
+Triangular Pyramid Image - https://www.google.com/url?sa=i&url=https%3A%2F%2Fmammothmemory.net%2Fmaths%2Fgeometry%2Fcircumference-area-and-volume%2Fvolume-of-triangular-based-pyramids.html&psig=AOvVaw3jjxkRS583l6pmUPTdC2e1&ust=1715139859639000&source=images&cd=vfe&opi=89978449&ved=0CBAQjRxqFwoTCJCw3obQ-oUDFQAAAAAdAAAAABAE 
+Rectangular Pyramid Image - https://www.google.com/url?sa=i&url=https%3A%2F%2Fbyjus.com%2Fmaths%2Frectangular-pyramid%2F&psig=AOvVaw1nb7iDskQol2gWMYOV_tiy&ust=1715140116954000&source=images&cd=vfe&opi=89978449&ved=0CBAQjRxqFwoTCNjmzYDR-oUDFQAAAAAdAAAAABAE 
+Regular Triangular Pyramid Image - https://www.google.com/url?sa=i&url=https%3A%2F%2Fdiscourse.shapr3d.com%2Ft%2Fhow-to-draw-a-pyramid%2F20806&psig=AOvVaw0F87lTHy4WwITzHBXz1-iO&ust=1715140309548000&source=images&cd=vfe&opi=89978449&ved=0CBAQjRxqFwoTCJCY29rR-oUDFQAAAAAdAAAAABAE
+Square Pyramid Image - https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.math-salamanders.com%2Fsquare-base-pyramid-volume-calculator.html&psig=AOvVaw1HPN4rqAUNPZKicGyx5Y6m&ust=1715140540490000&source=images&cd=vfe&opi=89978449&ved=0CBAQjRxqFwoTCNj7ys_S-oUDFQAAAAAdAAAAABA7 
+Pentagonal Pyramid Image - https://www.google.com/url?sa=i&url=https%3A%2F%2Fen.neurochispas.com%2Fgeometry%2Fvolume-of-a-pentagonal-pyramid-formulas-and-examples%2F&psig=AOvVaw3wm_OrU8oAVFeL6WT8nmGf&ust=1715140700973000&source=images&cd=vfe&opi=89978449&ved=0CBAQjRxqFwoTCKCI4ZfT-oUDFQAAAAAdAAAAABAE 
+Hexagonal Pyramid Image - https://www.google.com/url?sa=i&url=https%3A%2F%2Fmathmonks.com%2Fpyramid%2Fvolume-of-a-hexagonal-pyramid&psig=AOvVaw3knZb-n8kYeVQOHz2xbRLl&ust=1715141597644000&source=images&cd=vfe&opi=89978449&ved=0CBAQjRxqFwoTCJjWpL_W-oUDFQAAAAAdAAAAABAE 
+Octagonal Pyramid Image - https://www.google.com/url?sa=i&url=https%3A%2F%2Fetc.usf.edu%2Fclipart%2F43100%2F43186%2Foct5_43186.htm&psig=AOvVaw1WDaObNcti4diFXoHH7t5g&ust=1715141734744000&source=images&cd=vfe&opi=89978449&ved=0CBAQjRxqFwoTCODP_IHX-oUDFQAAAAAdAAAAABBk
+Triangular Prism Image - https://www.google.com/url?sa=i&url=https%3A%2F%2Fmathmonks.com%2Fprism%2Fvolume-of-a-triangular-prism&psig=AOvVaw04u3_xOg-whAHqh2HV6Vym&ust=1715142145359000&source=images&cd=vfe&opi=89978449&ved=0CBAQjRxqFwoTCNCm15_Z-oUDFQAAAAAdAAAAABAE 
+Rectangular Prism Image - https://www.google.com/url?sa=i&url=https%3A%2F%2Fmathmonks.com%2Fprism%2Fvolume-of-a-rectangular-prism&psig=AOvVaw17TYWdvqUMo2lkAHEwV5Dh&ust=1715142306721000&source=images&cd=vfe&opi=89978449&ved=0CBAQjRxqFwoTCIjkoZHZ-oUDFQAAAAAdAAAAABAE
+Regular Triangular Prism Image - https://www.google.com/url?sa=i&url=https%3A%2F%2Fbyjus.com%2Fvolume-of-a-triangular-prism-formula%2F&psig=AOvVaw1mAyBnnnDLeN-62ZgJOCab&ust=1715142435969000&source=images&cd=vfe&opi=89978449&ved=0CBAQjRxqFwoTCJiTkNLZ-oUDFQAAAAAdAAAAABAJ
+Square Prism Image - https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.cuemath.com%2Fmeasurement%2Fvolume-of-square-prism%2F&psig=AOvVaw0o5BPg6pKZzt71okBA0Dtx&ust=1715142611646000&source=images&cd=vfe&opi=89978449&ved=0CBAQjRxqFwoTCPDT5KHb-oUDFQAAAAAdAAAAABAE
+Pentagonal Prism Image - https://www.google.com/url?sa=i&url=https%3A%2F%2Fbyjus.com%2Fmaths%2Fpentagonal-prism%2F&psig=AOvVaw39JyhtzDcSLPyqMzdoW9-l&ust=1715142825512000&source=images&cd=vfe&opi=89978449&ved=0CBAQjRxqFwoTCJioyY3b-oUDFQAAAAAdAAAAABAE 
+Hexagonal Prism Image - https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.quora.com%2FWhat-is-the-formula-for-finding-the-volume-of-Hexagon&psig=AOvVaw3P0wIvYeBFKXsoXW0OX3uw&ust=1715143085520000&source=images&cd=vfe&opi=89978449&ved=0CBAQjRxqFwoTCLiWj4fc-oUDFQAAAAAdAAAAABAS 
+Octagonal Prism Image- https://www.google.com/url?sa=i&url=https%3A%2F%2Fmathmonks.com%2Fprism%2Foctagonal-prism&psig=AOvVaw26s7ygBIQJPRjPGdZvvrJs&ust=1715143205436000&source=images&cd=vfe&opi=89978449&ved=0CBAQjRxqFwoTCJDo3r3c-oUDFQAAAAAdAAAAABAE
+Sphere Image - https://www.google.com/url?sa=i&url=https%3A%2F%2Fmathmonks.com%2Fsphere%2Fvolume-of-a-sphere&psig=AOvVaw3aJZV7Tdby57iqnn7rvTH8&ust=1715143318456000&source=images&cd=vfe&opi=89978449&ved=0CBAQjRxqFwoTCMDa4vPc-oUDFQAAAAAdAAAAABAJ 
+Icon and Sound - Code.org
+*/
